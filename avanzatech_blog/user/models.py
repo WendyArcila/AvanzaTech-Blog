@@ -29,7 +29,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     team = models.ForeignKey(Team, on_delete = models.SET_DEFAULT, default=1)
     email = models.EmailField(_('email address'), unique=True)
     nick_name = models.CharField(_('nick name'), max_length = 150, null=True)
-    is_admin = models.BooleanField(_('is admin or blogger'),default = False)
+    is_admin = models.BooleanField(_('is admin'),default = False)
     is_staff = models.BooleanField(_('staff status'), default=False)
     is_active = models.BooleanField(_('active'), default=True)
     created_date = models.DateTimeField(default = timezone.now) 

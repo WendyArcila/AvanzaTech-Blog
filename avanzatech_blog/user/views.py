@@ -10,7 +10,7 @@ def login_view(request):
         if user is not None:
             login(request, user)
             # Redirect to a success page.
-            return redirect('success_page')
+            return render(request,'success_page.html')
         else:
             # Return an 'invalid login' error message.
             return render(request, 'login.html', {'error': 'Invalid credentials'})
@@ -21,5 +21,5 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     # Redirect to a login page, home page, or any other page
-    return redirect('login_page')
+    return redirect('login')
 
