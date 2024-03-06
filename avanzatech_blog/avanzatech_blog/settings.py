@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'permission',
     'category',
     'post_cat_permission',
-    'corsheaders',
+    
     
 ]
 
@@ -58,7 +58,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'avanzatech_blog.urls'
@@ -150,23 +149,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        
     ],
     # Enable IsAuthenticated Permission
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
-    # Disable Browsable API and Render JSON
-    'DEFAULT_RENDERER_CLASSES':('rest_framework.renderers.JSONRenderer',),
-    
+ 
 }
-'''
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-]
-'''
-
-
 
 

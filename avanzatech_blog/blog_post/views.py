@@ -1,9 +1,19 @@
-from django.shortcuts import render
-from django.views.generic.edit import CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+
+from rest_framework import generics
+from .models import BlogPost
+from .api.serializers import BlogPostListSerializer, BlogPostCreateSerializer
 
 # Create your views here.
 
 
-#class BlogPostCreateView(LoginRequiredMixin, CreateView):
-    
+class BlogPostListCreate(generics.ListCreateAPIView):
+    queryset = BlogPost.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return BlogPostCreateSerializer
+        return BlogPostListSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+        
