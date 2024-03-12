@@ -1,0 +1,22 @@
+{
+    "title": "nuevoi",
+    "content": "este es el contenido del post de prueba quizas no supere los 200 caracteres pero debo seguir escribiendo, espero que sí los supere para que no me vaya a generar error, por esa bobada, con el excerpt, creo que se escribe así pero no estoy segura, ojalá si sea así, será que ya van 200 caracteres, ahhh no sé cómo hacer para saber, no voy a contar, noooo son muchas letras, yo espero que sí, que ya me haya pasado de 200 caracteres sino pues paila, nada que hacer, tocó seguir",
+    "post_category_permission": [
+        {
+            "permission":1,
+            "category": 1
+        },
+        {
+            "permission": 2,
+            "category": 2
+        },
+        {
+            "permission": 1,
+            "category": 3
+        },
+        {
+            "permission":2,
+            "category": 4
+        }
+    ]
+}

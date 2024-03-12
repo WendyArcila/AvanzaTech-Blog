@@ -4,5 +4,7 @@ from permission.models import Permission
 class PermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
-        fields = ['name', 'description']
+        fields = ['id','name']
+        read_only_fields = ['name']
+        
         

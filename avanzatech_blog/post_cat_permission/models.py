@@ -6,10 +6,11 @@ from permission.models import Permission
 
 class PostCategoryPermission(models.Model):
     blog_post = models.ForeignKey(BlogPost, on_delete = models.CASCADE, related_name = 'post_category_permissions')
-    category = models.ForeignKey(Category, on_delete = models.SET(None))
-    permission = models.ForeignKey(Permission, on_delete = models.SET(None), default = None )
+    category = models.ForeignKey(Category, on_delete = models.CASCADE)
+    permission = models.ForeignKey(Permission, on_delete = models.CASCADE)
     
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['blog_post', 'category'], name='unique_post_category')
         ]
+        

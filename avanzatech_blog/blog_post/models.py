@@ -13,5 +13,7 @@ class BlogPost(models.Model):
     created_date = models.DateTimeField(default = timezone.now) 
     updated_date = models.DateTimeField(default = timezone.now)
     
+
 def __str__(self):
     return self.content 
+
