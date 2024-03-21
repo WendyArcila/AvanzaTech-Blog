@@ -1,61 +1,121 @@
-import factory 
-from faker import Faker
-from category.models import Category
-from permission.models import Permission
+    
+import factory
 from factory.django import DjangoModelFactory
 from blog_post.models import BlogPost
+from test.factories.post_category_permission.factories import PostCategoryPermissionTeamReadFactory,PostCategoryPermissionPublicReadFactory,PostCategoryPermissionAuthenticatedReadFactory,PostCategoryPermissionAuthorReadFactory
+from test.factories.post_category_permission.factories import PostCategoryPermissionPublicNoneFactory, PostCategoryPermissionAuthenticatedNoneFactory,PostCategoryPermissionTeamNoneFactory,PostCategoryPermissionAuthorNoneFactory
+from test.factories.post_category_permission.factories import PostCategoryPermissionPublicEditFactory,PostCategoryPermissionAuthenticatedEditFactory,PostCategoryPermissionAuthorEditFactory,PostCategoryPermissionTeamEditFactory
 
-fake = Faker()
 
-class BlogPostFactory(DjangoModelFactory):
-    
+
+class BlogPostFactoryBasic(DjangoModelFactory):
     class Meta:
         model = BlogPost
-
-    title = fake.name()
-    content = fake.text(max_nb_chars=500)
+        skip_postgeneration_save = True
+        
+    title = factory.Faker('name')
+    content = factory.Faker('text', max_nb_chars=500)
+    #author = SubFactory(UserFactory)
     
+    @factory.post_generation
+    def set_author(self, create, extracted, **kwargs):
+        if extracted:
+            # Si se pasa un autor, lo asignamos al BlogPost
+            self.author = extracted
+            self.save()
+
+class BlogPostReadFactory(BlogPostFactoryBasic):
+    @factory.post_generation
+    def post_category_permission(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+        
+        PostCategoryPermissionPublicReadFactory.create_with_blog_post(self)
+        PostCategoryPermissionAuthenticatedReadFactory.create_with_blog_post(self)
+        PostCategoryPermissionTeamReadFactory.create_with_blog_post(self)
+        PostCategoryPermissionAuthorReadFactory.create_with_blog_post(self)
+            
+            
+class BlogPostReadPublicFactory(BlogPostFactoryBasic):
     
+    @factory.post_generation
+    def post_category_permission(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+        
+        PostCategoryPermissionPublicReadFactory.create_with_blog_post(self)
+        PostCategoryPermissionAuthenticatedNoneFactory.create_with_blog_post(self)
+        PostCategoryPermissionTeamNoneFactory.create_with_blog_post(self)
+        PostCategoryPermissionAuthorNoneFactory.create_with_blog_post(self)
+        
+
+class BlogPostReadAuthenticatedFactory(BlogPostFactoryBasic):
+      
+    @factory.post_generation
+    def post_category_permission(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+        
+        PostCategoryPermissionPublicNoneFactory.create_with_blog_post(self)
+        PostCategoryPermissionAuthenticatedReadFactory.create_with_blog_post(self)
+        PostCategoryPermissionTeamNoneFactory.create_with_blog_post(self)
+        PostCategoryPermissionAuthorNoneFactory.create_with_blog_post(self)
+
+class BlogPostReadTeamFactory(BlogPostFactoryBasic):
+        
+    @factory.post_generation
+    def post_category_permission(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+        
+        PostCategoryPermissionPublicNoneFactory.create_with_blog_post(self)
+        PostCategoryPermissionAuthenticatedNoneFactory.create_with_blog_post(self)
+        PostCategoryPermissionTeamReadFactory.create_with_blog_post(self)
+        PostCategoryPermissionAuthorNoneFactory.create_with_blog_post(self)
+
+class BlogPostReadAuthorFactory(BlogPostFactoryBasic):
     
-    ''' 
-    def build_blogpost_JSON(self): 
-        return {
-                "title": fake.text(),
-                "content": fake.text(max_nb_chars = 500), 
-                post_category_permission = factory.LazyAttribute(
-                        lambda obj: [
-                            {"permission": PermissionFactory.create().id, "category": CategoryFactory.create().id},
-                            {"permission": PermissionFactory.create().id, "category": CategoryFactory.create().id},
-                            {"permission": PermissionFactory.create().id, "category": CategoryFactory.create().id},
-                            {"permission": PermissionFactory.create().id, "category": CategoryFactory.create().id},
-                        ]
-    )
+    @factory.post_generation
+    def post_category_permission(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
         
-        
-
-    class Meta: 
-        model = BlogPost
-        
-    title = fake.text()
-    content = fake.text(max_nb_chars = 500)
-    post_category_permission = [['permission': factory.SubFactory(PermissionFactory),'category' : factory.SubFactory(CategoryFactory)], 
-                                ['permission': factory.SubFactory(PermissionFactory),'category' : factory.SubFactory(CategoryFactory)],
-                                ['permission': factory.SubFactory(PermissionFactory),'category' : factory.SubFactory(CategoryFactory)],                          ['permission': factory.SubFactory(PermissionFactory),'category' : factory.SubFactory(CategoryFactory)],
-                                ]
-'''   
-
-class PermissionFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Permission     
-        
-    name = fake.name()
-    description = fake.text()
+        PostCategoryPermissionPublicNoneFactory.create_with_blog_post(self)
+        PostCategoryPermissionAuthenticatedNoneFactory.create_with_blog_post(self)
+        PostCategoryPermissionTeamNoneFactory.create_with_blog_post(self)
+        PostCategoryPermissionAuthorReadFactory.create_with_blog_post(self)
 
 
-class CategoryFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Category
-        
-    name = fake.name()
-    description = fake.text()
+class BlogPostEditFactory(BlogPostFactoryBasic):
     
+    @factory.post_generation
+    def post_category_permission(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+        
+        PostCategoryPermissionPublicEditFactory.create_with_blog_post(self)
+        PostCategoryPermissionAuthenticatedEditFactory.create_with_blog_post(self)
+        PostCategoryPermissionTeamEditFactory.create_with_blog_post(self)
+        PostCategoryPermissionAuthorEditFactory.create_with_blog_post(self)
+        
+class BlogPostNoneFactory(BlogPostFactoryBasic):
+    
+    @factory.post_generation
+    def post_category_permission(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+        
+        PostCategoryPermissionPublicNoneFactory.create_with_blog_post(self)
+        PostCategoryPermissionAuthenticatedNoneFactory.create_with_blog_post(self)
+        PostCategoryPermissionTeamNoneFactory.create_with_blog_post(self)
+        PostCategoryPermissionAuthorNoneFactory.create_with_blog_post(self)
+        
+        
+

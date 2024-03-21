@@ -12,23 +12,35 @@ en las que se van a crear las instancias de cat_post_permi, se guarda el autor
 como quien está autenticado y además se guarda en excerpt los 200 primeros caracteres del post 
 '''
     
-class BlogPostCreateSerializer(serializers.ModelSerializer):
+class BlogPostListCreateSerializer(serializers.ModelSerializer):
     
     post_category_permission = CategoryPostPermissionSerializer(many=True, source ='post_category_permissions')
     class Meta:
         model = BlogPost
-        fields = ['author', 'title', 'content', 'excerpt','post_category_permission' ]
-        read_only_fields = ['author', 'excerpt']
-
-    
-
+        fields = ['id', 'author', 'title', 'content', 'excerpt','post_category_permission' ]
+        read_only_fields = ['author', 'excerpt','id']
+        
+    def validate(self, data):
+        # Verifica si 'post_category_permission' está presente y no está vacío
+        if 'post_category_permissions' not in data or not data['post_category_permissions']:
+            raise ValidationError("Permission are necessary to create a post.")
+        # Verifica si la cantidad de 'post_category_permission' es exactamente 4
+        
+        if len(data['post_category_permissions']) != 4:
+            raise ValidationError("The post needs exactly four permissions.")
+        
+        # Extrae los IDs de las categorías
+        category_ids = [permission_data.get('category').id for permission_data in data['post_category_permissions']]
+            
+        # Verifica si todos los IDs de las categorías son únicos y están entre 1 y 4
+        if len(category_ids) != len(set(category_ids)):
+            raise ValidationError("The category needs to be unique.")
+        if not all(1 <= category_id <= 4 for category_id in category_ids):
+            raise ValidationError("The category ID must be between 1 and 4.")
+            
+        return data
 
     def create(self, validated_data):
-        
-        def validate(self, data):
-            if 'post_category_permission' not in data or not data['post_category_permission']:
-                raise ValidationError("Permission are necessary to create a post.")
-            return data
         
         permissions_data = validated_data.pop('post_category_permissions')
         blog_post = BlogPost.objects.create(**validated_data)
@@ -36,7 +48,6 @@ class BlogPostCreateSerializer(serializers.ModelSerializer):
         blog_post.excerpt = excerpt
         blog_post.save()
         
-        print("esta es la categoría mirar acáaaaaaaa: ", permissions_data)
         
         # Crear automáticamente 4 instancias de Category_Post_Permission
         for permission_data in permissions_data:
@@ -52,42 +63,55 @@ class BlogPostCreateSerializer(serializers.ModelSerializer):
 
     
 class BlogPostIdSerializer(serializers.ModelSerializer):
+    post_category_permission = CategoryPostPermissionSerializer(many=True, source ='post_category_permissions')
     author = UserSerializer(read_only=True)
-    post_category_permissions = serializers.SerializerMethodField()   
     
     class Meta: 
         model = BlogPost
-        fields = ['id', 'author', 'title', 'content', 'excerpt','post_category_permissions' ]
-        read_only_fields = ['author', 'excerpt']
+        fields = ['id', 'author', 'title', 'content','post_category_permission' ]
+        read_only_fields = ['id', 'author']
 
+    def validate(self, data):
+        # Verifica si 'post_category_permission' está presente y no está vacío
+        if 'post_category_permissions' not in data or not data['post_category_permissions']:
+            raise ValidationError("Permission are necessary to create a post.")
+        # Verifica si la cantidad de 'post_category_permission' es exactamente 4
+        
+        if len(data['post_category_permissions']) != 4:
+            raise ValidationError("The post needs exactly four permissions.")
+        
+        # Extrae los IDs de las categorías
+        category_ids = [permission_data.get('category').id for permission_data in data['post_category_permissions']]
+        expected_order = list(range(1, 5)) # Lista de espera con IDs del 1 al 4
+        
+        if category_ids != expected_order:
+            raise ValidationError("The category IDs must be in order from 1 to 4.")
+            
+        # Verifica si todos los IDs de las categorías son únicos y están entre 1 y 4
+        if len(category_ids) != len(set(category_ids)):
+            raise ValidationError("The category needs to be unique.")
+        if not all(1 <= category_id <= 4 for category_id in category_ids):
+            raise ValidationError("The category ID must be between 1 and 4.")
+        
+        
+        return data
+    
     def update(self, instance, validated_data):
         # Actualizar el título y el contenido del BlogPost
-        current_title = instance.title
-        current_content = instance.content
         
         instance.title = validated_data.get('title', instance.title)
         instance.content = validated_data.get('content', instance.content)
-        excerpt = instance.content[:200]
-        instance.excerpt = excerpt
         instance.save()
         
-        title_changed = current_title != instance.title
-        content_changed = current_content != instance.content
-
-       # if title_changed or content_changed:
-            
-        # Actualizar las categorías asociadas, si se proporcionan
         post_category_permissions_data = validated_data.get('post_category_permissions', [])
-        if post_category_permissions_data:
-            instance.post_category_permissions.set([PostCategoryPermission.objects.get(pk=id) for id in post_category_permissions_data])
-
+        for permission_data in post_category_permissions_data:
+            permission_id = permission_data.get('permission').id
+            permission = Permission.objects.get(pk=permission_id)
+            category_id = permission_data.get('category').id
+            category = Category.objects.get(pk=category_id)
+            
+            # Buscar y actualizar la instancia de post_category_permission
+            post_category_permission = instance.post_category_permissions.get(category=category)
+            post_category_permission.permission = permission
+            post_category_permission.save()
         return instance
-    
-    def get_post_category_permissions(self, obj):
-        # Obtiene todos los permisos asociados a obj (un BlogPost)
-        # a través de las instancias de PostCategoryPermission.
-        permissions = obj.post_category_permissions.select_related('permission').all()
-        
-        # Devuelve una lista de objetos serializados por CategoryPostPermissionListSerializer
-        return CategoryPostPermissionSerializer(permissions, many=True).data
-    
