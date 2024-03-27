@@ -18,7 +18,16 @@ class BlogPostListCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlogPost
         fields = ['id', 'author', 'title', 'content', 'excerpt','post_category_permission' ]
-        read_only_fields = ['author', 'excerpt','id']
+        
+    def to_representation(self, instance):
+        return {
+            'Id': instance.id,
+            'Author': instance.author.nick_name,
+            'Title': instance.title,
+            'Excerpt': instance.excerpt,
+            'Permissions': CategoryPostPermissionSerializer(instance.post_category_permissions, many = True).data            
+        }
+        
         
     def validate(self, data):
         # Verifica si 'post_category_permission' está presente y no está vacío

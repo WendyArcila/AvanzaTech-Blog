@@ -9,4 +9,9 @@ class CategoryPostPermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostCategoryPermission
         fields = ['permission',  'category']
-        
+    
+    def to_representation(self, instance):
+        return{
+            'permission' :instance.permission.name,
+            'category': instance.category.name            
+        }
