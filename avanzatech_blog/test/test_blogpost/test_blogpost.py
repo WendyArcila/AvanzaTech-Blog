@@ -33,7 +33,7 @@ def test_creation_post(authenticated_client):
     response = authenticated_client.post(url, json.dumps(json_data), content_type='application/json')
     
     # Ahora puedes verificar la respuesta
-    assert response.status_code == 201 # Asegúrate de que la solicitud POST fue exitosa
+    assert response.status_code == 201 
     
     
 #creación de un test con menos información de la que necesita 
@@ -178,7 +178,7 @@ def test_blogpost_list_authenticated_permissions_view(user_creation_three,user_c
             BlogPostReadAuthenticatedFactory.create(author=user_creation_two),
             BlogPostReadAuthenticatedFactory.create(author=user_creation_two),
             BlogPostReadAuthenticatedFactory.create(author=user_creation_one), #author 
-            #BlogPostReadAuthenticatedFactory.create(author=user_creation_three), #team
+            BlogPostReadAuthenticatedFactory.create(author=user_creation_three), #team
             BlogPostReadPublicFactory.create(author=user_creation_two),
         ]
         
@@ -203,11 +203,11 @@ def test_blogpost_list_team_permissions_view(user_creation_one,user_creation_two
     user_creation_three.team = user_creation_one.team
     #print(user_creation_three.team == user_creation_one.team)
     blog_posts = [
-            #BlogPostReadTeamFactory.create(author=user_creation_three),
-            #BlogPostReadTeamFactory.create(author=user_creation_three),
-            #BlogPostReadTeamFactory.create(author=user_creation_two), # != team
-            #BlogPostReadTeamFactory.create(author=user_creation_one), # author
-            #BlogPostReadPublicFactory.create(author=user_creation_two),
+            BlogPostReadTeamFactory.create(author=user_creation_three),
+            BlogPostReadTeamFactory.create(author=user_creation_three),
+            BlogPostReadTeamFactory.create(author=user_creation_two), # != team
+            BlogPostReadTeamFactory.create(author=user_creation_one), # author
+            BlogPostReadPublicFactory.create(author=user_creation_two),
             BlogPostReadAuthenticatedFactory.create(author=user_creation_three)
         ]
             
@@ -234,7 +234,7 @@ def test_blogpost_list_author_permissions_view(user_creation_one,user_creation_t
             BlogPostReadAuthorFactory.create(author=user_creation_two), # != team
             BlogPostReadAuthorFactory.create(author=user_creation_three), # author
             BlogPostReadPublicFactory.create(author=user_creation_two),
-            #BlogPostReadAuthenticatedFactory.create(author=user_creation_three)
+            BlogPostReadAuthenticatedFactory.create(author=user_creation_three)
         ]
             
     client = authenticated_client

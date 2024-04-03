@@ -1,8 +1,6 @@
 from .models import BlogPost
 from rest_framework.response import Response
 from .api.serializers import BlogPostListCreateSerializer, BlogPostIdSerializer
-from django.db.models import Q, QuerySet
-from django.contrib.auth.models import AnonymousUser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework import generics, status
 from user.permission import AllowPublicEdit
@@ -17,12 +15,13 @@ class BlogPostListCreate(CustomPermissionMixin, generics.ListCreateAPIView):
     def get_queryset(self):
         return super().get_queryset(["ReadOnly","Edit"])
     
+    
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
     
 
 
-class BlogPostRetrieveUpdateView(CustomPermissionMixin, generics.RetrieveUpdateAPIView):
+class BlogPostRetrieveUpdateDeleteView(CustomPermissionMixin, generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [AllowPublicEdit]
     serializer_class = BlogPostIdSerializer
     

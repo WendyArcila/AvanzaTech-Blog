@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'permission',
     'category',
     'post_cat_permission',
-    
+    'django_filters',
     
 ]
 
@@ -155,7 +155,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
-    'DEFAULT_PAGINATION_CLASS': 'blog_post.pagination.CustomPagination',
+    'DEFAULT_PAGINATION_CLASS': 'avanzatech_blog.pagination.CustomPagination',
     'PAGE_SIZE': 10
 }
 

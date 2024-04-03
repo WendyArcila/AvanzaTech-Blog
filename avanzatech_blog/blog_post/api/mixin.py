@@ -1,8 +1,7 @@
 from blog_post.models import BlogPost
 from django.db.models import Q
 from django.contrib.auth.models import AnonymousUser
-from rest_framework.response import Response
-from rest_framework import  status
+
 
 
 class CustomPermissionMixin():
@@ -31,6 +30,7 @@ class CustomPermissionMixin():
         )
         
     def get_queryset(self, permissions): 
+        #import pdb; pdb.set_trace()
         if isinstance(self.request.user, AnonymousUser):
             queryset = BlogPost.objects.filter(
                 post_category_permissions__category__name = "Public",

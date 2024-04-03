@@ -1,12 +1,17 @@
 from rest_framework import serializers 
-from blog_post.models import BlogPost
 from post_like.models import PostLike
 
 
-class PostLikeListCreateSerializer(serializers.ModelSerializer):
+class PostLikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostLike
         fields = ['id','blog_post', 'author']
         read_only_fields = ['author', 'id']
-        
     
+    
+    def validate(self, data):
+        author = self.context['request'].user
+        # Verifica si ya existe un PostLike con la misma combinación de blog_post y author
+        if PostLike.objects.filter(blog_post=data['blog_post'], author=author).exists():
+            raise serializers.ValidationError("This post already has your like.")
+        return data
