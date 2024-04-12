@@ -14,6 +14,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='postcategorypermission',
             name='permission',
-            field=models.ForeignKey(default=None, on_delete=models.SET(None), to='permission.permission'),
+            field=models.ForeignKey(
+                default=None,
+                on_delete=models.SET(None),
+                to='permission.permission'),
         ),
     ]

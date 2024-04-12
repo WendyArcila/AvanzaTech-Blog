@@ -16,11 +16,17 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='postcategorypermission',
             name='category',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.SET_DEFAULT, to='category.category'),
+            field=models.ForeignKey(
+                default=None,
+                on_delete=django.db.models.deletion.SET_DEFAULT,
+                to='category.category'),
         ),
         migrations.AlterField(
             model_name='postcategorypermission',
             name='permission',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.SET_DEFAULT, to='permission.permission'),
+            field=models.ForeignKey(
+                default=None,
+                on_delete=django.db.models.deletion.SET_DEFAULT,
+                to='permission.permission'),
         ),
     ]

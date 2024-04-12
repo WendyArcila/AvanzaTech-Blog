@@ -17,13 +17,28 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PostCategoryPermission',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('blog_post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='blog_post.blogpost')),
-                ('category', models.ForeignKey(on_delete=models.SET(None), to='category.category')),
+                ('id',
+                 models.BigAutoField(
+                     auto_created=True,
+                     primary_key=True,
+                     serialize=False,
+                     verbose_name='ID')),
+                ('blog_post',
+                 models.ForeignKey(
+                     on_delete=django.db.models.deletion.CASCADE,
+                     to='blog_post.blogpost')),
+                ('category',
+                 models.ForeignKey(
+                     on_delete=models.SET(None),
+                     to='category.category')),
             ],
         ),
         migrations.AddConstraint(
             model_name='postcategorypermission',
-            constraint=models.UniqueConstraint(fields=('blog_post', 'category'), name='unique_post_category'),
+            constraint=models.UniqueConstraint(
+                fields=(
+                    'blog_post',
+                    'category'),
+                name='unique_post_category'),
         ),
     ]

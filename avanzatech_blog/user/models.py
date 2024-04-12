@@ -1,9 +1,8 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.utils import timezone  
+from django.utils import timezone
 from team.models import Team
-
 
 
 class CustomUserManager(BaseUserManager):
@@ -19,7 +18,6 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        #extra_fields.setdefault('is_admin', True)
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError(_('Superuser must have is_staff=True.'))
@@ -28,15 +26,18 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    team = models.ForeignKey(Team, on_delete = models.SET_DEFAULT, default=1)
+    team = models.ForeignKey(
+        Team,
+        on_delete=models.SET_DEFAULT,
+        default=1,
+        related_name='user_team')
     email = models.EmailField(_('email address'), unique=True)
-    nick_name = models.CharField(_('nick name'), max_length = 150, null=True)
-    is_admin = models.BooleanField(_('is admin'),default = False)
+    nick_name = models.CharField(_('nick name'), max_length=150, null=True)
     is_staff = models.BooleanField(_('staff status'), default=False)
     is_active = models.BooleanField(_('active'), default=True)
-    created_date = models.DateTimeField(default = timezone.now) 
-    
+    created_date = models.DateTimeField(default=timezone.now)
 
     objects = CustomUserManager()
 
@@ -45,5 +46,3 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f" {self.email}"
-
-

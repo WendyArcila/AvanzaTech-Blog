@@ -13,6 +13,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='customuser',
             name='is_admin',
-            field=models.BooleanField(default=False, verbose_name='is admin or blogger'),
+            field=models.BooleanField(
+                default=False,
+                verbose_name='is admin or blogger'),
         ),
     ]

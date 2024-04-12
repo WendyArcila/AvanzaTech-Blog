@@ -14,9 +14,20 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Category',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=150, verbose_name='Name')),
-                ('description', models.CharField(max_length=255, verbose_name='Description')),
+                ('id',
+                 models.BigAutoField(
+                     auto_created=True,
+                     primary_key=True,
+                     serialize=False,
+                     verbose_name='ID')),
+                ('name',
+                 models.CharField(
+                     max_length=150,
+                     verbose_name='Name')),
+                ('description',
+                 models.CharField(
+                     max_length=255,
+                     verbose_name='Description')),
             ],
         ),
     ]

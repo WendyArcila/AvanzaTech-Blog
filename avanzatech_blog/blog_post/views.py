@@ -8,33 +8,35 @@ from blog_post.api.mixin import CustomPermissionMixin
 
 
 class BlogPostListCreate(CustomPermissionMixin, generics.ListCreateAPIView):
-    
+
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = BlogPostListCreateSerializer
-    
+
     def get_queryset(self):
-        return super().get_queryset(["ReadOnly","Edit"])
-    
-    
+        return super().get_queryset(["ReadOnly", "Edit"]).order_by('id')
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-    
 
 
-class BlogPostRetrieveUpdateDeleteView(CustomPermissionMixin, generics.RetrieveUpdateDestroyAPIView):
+class BlogPostRetrieveUpdateDeleteView(
+        CustomPermissionMixin,
+        generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [AllowPublicEdit]
     serializer_class = BlogPostIdSerializer
-    
+
     def get_queryset(self):
-        return super().get_queryset(["ReadOnly","Edit"])
-    
+        return super().get_queryset(["ReadOnly", "Edit"])
+
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        
+
         if not super().has_edit_permission(instance):
-            return Response({"detail": "You do not have permission to edit this post."}, status=status.HTTP_403_FORBIDDEN)
-        
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
+            return Response(
+                {"detail": "You do not have permission to edit this post."}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             self.perform_update(serializer)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -43,15 +45,15 @@ class BlogPostRetrieveUpdateDeleteView(CustomPermissionMixin, generics.RetrieveU
 
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
-        
+
         if not super().has_edit_permission(instance):
-            return Response({"detail": "You do not have permission to delete this post."}, status=status.HTTP_403_FORBIDDEN)
-        
+            return Response(
+                {
+                    "detail": "You do not have permission to delete this post."},
+                status=status.HTTP_403_FORBIDDEN)
+
         self.perform_destroy(instance)
         return Response(status=204)
 
     def perform_destroy(self, instance):
         instance.delete()
-        
-    
-        

@@ -15,6 +15,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='postcategorypermission',
             name='blog_post',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='post_category_permissions', to='blog_post.blogpost'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='post_category_permissions',
+                to='blog_post.blogpost'),
         ),
     ]

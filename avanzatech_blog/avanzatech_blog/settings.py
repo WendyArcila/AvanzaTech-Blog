@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,7 +48,7 @@ INSTALLED_APPS = [
     'category',
     'post_cat_permission',
     'django_filters',
-    
+
 ]
 
 MIDDLEWARE = [
@@ -99,11 +100,13 @@ DATABASES = {
         'NAME': 'avanzatech_blog',
         'USER': 'postgres',
         'PASSWORD': '123456',
-        'HOST': 'localhost',  
-        'PORT': '5432',    
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
+if 'test' in sys.argv:
+    DATABASES['default']['NAME'] = 'mytestdatabase'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -149,7 +152,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-        
+
     ],
     # Enable IsAuthenticated Permission
     'DEFAULT_PERMISSION_CLASSES': (
@@ -158,5 +161,3 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'avanzatech_blog.pagination.CustomPagination',
     'PAGE_SIZE': 10
 }
-
-
