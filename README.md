@@ -18,7 +18,56 @@ AvanzaTechBlog offers the following key features:
   to posts
   
 ## Installation Instructions
+  1. Clone this repository in your local environment 
+  ```
+    $ git clone https://github.com/WendyArcila/AvanzaTech-Blog.git
+  ```
+  2. Create a database in your local environment. This project was made using PostgreSQL. If you change the database, update the information in the settings of the main app /avanzatech_blog.
+  ``` SQL
+  #Create database 
+  CREATE DATABASE avanzatech_blog_db;
+  
+  #update database information 
+  'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'avanzatech_blog',
+        'USER': ####,
+        'PASSWORD': ####,
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+  ```
+  3. Initialize the development environment and package manager with pipenv. Activate the virtual environment and install the following packages.
+  ```
+  # Create virtual environment with Pipfile.lock
+  $ pip install pipienv 
+  $ pipenv install --ignore-pipfile
+  $ pipenv shell 
 
+  # Install Python version 3.x.y, 3.10 or 3.11
+  $ pipenv --python 3.x.y install
+
+  # All the installed packages shpipeould be installed 
+  $ pipenv install django
+  $ pipenv install djangorestframework
+  ```
+  4. Perform the initial migrations.
+  ```
+  # Generate migrations
+  $ python manage.py makemigrations
+  # Apply the migrations
+  $ python manage.py migrate
+  ```
+  5. Create a superuser to access the administrative panel.
+  ```
+  # Create Superuser
+  $ python manage.py createsuperuser --no-input
+  ```
+  6. Start the development server.
+   ```
+  # Run development server
+  $ python manage.py runserver
+   ```
 ## Project Structure
 
 Project Structure
