@@ -9,7 +9,7 @@ class CustomPermissionMixin():
             post_category_permissions__category__name="Authenticated",
             post_category_permissions__permission__name__in=permission,
         ) & ~Q(author__email=self.request.user.email
-               ) & ~Q(author__team=self.request.user.team)
+            ) & ~Q(author__team=self.request.user.team)
 
     def filtered_author(self, permission):
         return Q(

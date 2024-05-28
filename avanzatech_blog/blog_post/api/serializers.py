@@ -1,11 +1,14 @@
 from rest_framework import serializers
 from blog_post.models import BlogPost
+from comment.api.serializers import CommentSerializer
 from post_cat_permission.models import PostCategoryPermission
 from permission.models import Permission
 from category.models import Category
+from post_like.api.serializers import PostLikeSerializer
 from user.api.serializers import UserSerializer
 from post_cat_permission.api.serializers import CategoryPostPermissionSerializer
 from rest_framework.exceptions import ValidationError
+from django.contrib.auth.models import AnonymousUser
 
 
 class BlogPostListCreateSerializer(serializers.ModelSerializer):
@@ -13,16 +16,44 @@ class BlogPostListCreateSerializer(serializers.ModelSerializer):
     post_category_permission = CategoryPostPermissionSerializer(
         many=True, source='post_category_permissions')
 
+    author_name = serializers.CharField(source='author.nick_name', read_only=True)
+    author_team = serializers.CharField(source='author.team.name', read_only=True)
+    likes = PostLikeSerializer(source='post_like', many=True, read_only=True)
+    comments = PostLikeSerializer(source='post_comment', many=True, read_only=True)
+    
     class Meta:
         model = BlogPost
         fields = [
             'id',
             'author',
+            'author_name',
+            'author_team',
+            'likes',
+            'comments',
             'title',
             'content',
             'excerpt',
+            'created_date',
             'post_category_permission']
-        read_only_fields = ['author', 'excerpt', 'id']
+        read_only_fields = ['author', 'excerpt', 'id', 'created_date', 'author_name', 'author_team', 'likes', 'comments' ]
+
+    def to_representation(self, instance):
+        
+        representation= super().to_representation(instance)
+        #import pdb; pdb.set_trace()
+        if self.context.get('request').user.is_authenticated: 
+            
+            request = self.context.get('request').user.id
+            
+            flag = False
+            like=instance.post_like.filter(author_id=request)
+            if like:
+                flag = True
+                
+            representation['flag'] = flag
+    
+        return representation
+    
 
     def validate(self, data):
         if 'post_category_permissions' not in data or not data['post_category_permissions']:
@@ -64,15 +95,25 @@ class BlogPostIdSerializer(serializers.ModelSerializer):
         many=True, source='post_category_permissions')
     author = UserSerializer(read_only=True)
 
+    author_name = serializers.CharField(source='author.nick_name', read_only=True)
+    author_team = serializers.CharField(source='author.team.name', read_only=True)
+    likes = PostLikeSerializer(source='post_like', many=True, read_only=True)
+    comments = CommentSerializer(source='post_comment', many=True, read_only=True)
+    
     class Meta:
         model = BlogPost
         fields = [
             'id',
             'author',
+            'author_name',
+            'author_team',
+            'likes',
+            'comments',
+            'created_date',
             'title',
             'content',
             'post_category_permission']
-        read_only_fields = ['id', 'author']
+        read_only_fields = ['id', 'created_date', 'author', 'author_name', 'author_team', 'likes', 'comments' ]
 
     def validate(self, data):
         if 'post_category_permissions' not in data or not data['post_category_permissions']:

@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-m3vco^y$77(=8ji%8t_!5s(1@i6uj3(pws=@vfwo46l&1#euxx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+]
 
 
 # Application definition
@@ -48,12 +49,14 @@ INSTALLED_APPS = [
     'category',
     'post_cat_permission',
     'django_filters',
+    'corsheaders',
 
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -69,8 +72,17 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 SESSION_COOKIE_AGE = 1209600  # 2 weeks, in seconds
 
-SESSION_COOKIE_SECURE = True  # Send the cookie only over HTTPS
-SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to session cookie
+SESSION_COOKIE_SECURE = False # Send the cookie only over HTTPS
+SESSION_COOKIE_HTTPONLY = False  # Prevent JavaScript access to session cookie
+
+
+CORS_ALLOW_ALL_ORIGINS = True  
+CORS_ALLOWED_ORIGINS = ['http://localhost:4200']
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:4200",
+]
 
 TEMPLATES = [
     {

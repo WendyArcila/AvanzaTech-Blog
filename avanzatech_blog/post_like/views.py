@@ -48,20 +48,22 @@ class PostLikeViewSet(CustomPermissionMixin, viewsets.ModelViewSet):
         return Response({"detail": "Method 'PATCH' not allowed."}, status=405)
 
     def retrieve(self, request, *args, **kwargs):
-        return Response(
-            {"detail": "Method 'RETRIEVE' not allowed."}, status=405)
+        return Response({"detail": "Method 'RETRIEVE' not allowed."}, status=405)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        # import pdb; pdb.set_trace()
 
-        if request.user != instance.author:
-            return Response({"message": "Only author can delete this object"},
-                            status=status.HTTP_401_UNAUTHORIZED)
-
-        super().destroy(request, *args, **kwargs)
+        id_post = self.kwargs['pk']
+        id_author = request.user.id
+        like = PostLike.objects.filter(blog_post=id_post, author = id_author).first()
+        if not like:
+            return Response({"message": "Object no exits"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        like.delete()
+        #super().destroy(request, *args, **kwargs)
         return Response({"message": "Object successfully deleted"},
                         status=status.HTTP_204_NO_CONTENT)
+
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = PostLikeFilter

@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class PostLike (models.Model):
-    blog_post = models.ForeignKey(BlogPost, on_delete=models.CASCADE)
+    blog_post = models.ForeignKey(BlogPost, on_delete=models.CASCADE, related_name='post_like')
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     class Meta:

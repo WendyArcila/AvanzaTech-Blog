@@ -477,7 +477,7 @@ def test_get_retrieve_authenticated_user_cannot_update_like(
     like = like_factory.create(
         author=user_one,
         blog_post=post_category_permissions1)
-
+    
     json_data = {
         'blog_post': post_category_permissions1.id,
     }
@@ -499,7 +499,7 @@ def test_delete_authenticated_user_can_delete_like_when_authenticated_user_is_th
         blog_post=post_category_permissions1)
 
     client.force_authenticate(user=user_two)
-    url = f'/likes/{like.id}/'
+    url = f'/likes/{post_category_permissions1.id}/'
     response = client.delete(url)
 
     assert response.status_code == 204, f"Error de solicitud: {response.content}"
@@ -514,12 +514,13 @@ def test_delete_authenticated_user_cannot_delete_like_when_authenticated_user_is
         author=user_one,
         blog_post=post_category_permissions1)
 
+    
     client.force_authenticate(user=user_two)
     url = f'/likes/{like.id}/'
     response = client.delete(url)
 
-    assert response.status_code == 401, f"Error de solicitud: {response.content}"
-    assert "Only author can delete this object" in response.data['message']
+    assert response.status_code == 400, f"Error de solicitud: {response.content}"
+    assert "Object no exits" in response.data['message']
 
 
 @pytest.mark.django_db

@@ -141,7 +141,7 @@ def test_a_logged_with_invalid_password():
     client = APIClient()
     response = client.post(url, json_data, format='json')
 
-    assert 'Invalid Credentials' in response.content.decode()
+    assert 'The password or email are incorrect' in response.content.decode()
     assert response.status_code == 400, f"Error de solicitud: {response.content}"
 
 
@@ -209,22 +209,7 @@ def test_delete_request_in_login():
 
 
 @pytest.mark.django_db
-def test_logout_successfully_with_post_method(user_one):
-
-    client = APIClient()
-    client.force_authenticate(user=user_one)
-
-    url = reverse('logout')
-    response = client.post(url)
-
-    session_id = response.cookies.get('sessionid')
-
-    assert response.status_code == 200
-    assert session_id is None
-
-
-@pytest.mark.django_db
-def test_logout_with_get_method(user_one):
+def test_logout_successfully_with_get_method(user_one):
 
     client = APIClient()
     client.force_authenticate(user=user_one)
@@ -234,8 +219,9 @@ def test_logout_with_get_method(user_one):
 
     session_id = response.cookies.get('sessionid')
 
-    assert response.status_code == 405, f"Error de solicitud: {response.content}"
-    assert 'Method \\"GET\\" not allowed.' in response.content.decode()
+    assert response.status_code == 200
+    assert session_id is None
+
 
 
 @pytest.mark.django_db

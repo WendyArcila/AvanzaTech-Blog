@@ -22,7 +22,7 @@ class CommentViewSet(CustomPermissionMixin, viewsets.ModelViewSet):
         blog_posts = super().get_queryset(["ReadOnly", "Edit"])
         comments = BlogComments.objects.filter(
             blog_post__in=Subquery(blog_posts.values('id')))
-        return comments.order_by('id')
+        return comments.order_by('-created_date')
 
     def create(self, request):
         post_id = request.data.get('blog_post')
@@ -59,6 +59,7 @@ class CommentViewSet(CustomPermissionMixin, viewsets.ModelViewSet):
             return Response({"message": "Only author can delete this object"},
                             status=status.HTTP_401_UNAUTHORIZED)
 
+        
         super().destroy(request, *args, **kwargs)
         return Response({"message": "Object successfully deleted"},
                         status=status.HTTP_204_NO_CONTENT)
